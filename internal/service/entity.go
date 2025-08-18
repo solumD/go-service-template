@@ -1,4 +1,4 @@
-package entity
+package service
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/solumD/go-service-template/internal/model"
 	"github.com/solumD/go-service-template/internal/repository"
-	"github.com/solumD/go-service-template/internal/service"
 	"github.com/solumD/go-service-template/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -15,7 +14,7 @@ type entityService struct {
 	repository repository.Repository
 }
 
-func New(r repository.Repository) service.EntityService {
+func New(r repository.Repository) EntityService {
 	return &entityService{
 		repository: r,
 	}
