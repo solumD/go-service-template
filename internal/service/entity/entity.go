@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/solumD/go-service-template/internal/logger"
 	"github.com/solumD/go-service-template/internal/model"
 	"github.com/solumD/go-service-template/internal/repository"
 	"github.com/solumD/go-service-template/internal/service"
+	"github.com/solumD/go-service-template/pkg/logger"
 	"go.uber.org/zap"
 )
 
