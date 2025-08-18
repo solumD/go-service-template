@@ -19,13 +19,13 @@ func New(pool *pgxpool.Pool) repository.Repository {
 	}
 }
 
-func (r *entityRepository) SaveEntity(ctx context.Context, entity *model.Entity) (int64, error) {
+func (r *entityRepository) CreateEntity(ctx context.Context, entity *model.Entity) (int64, error) {
 	query := `INSERT INTO entity (name) VALUES ($1) RETURNING id`
 
 	var entityID int64
 	err := r.pool.QueryRow(ctx, query, entity.Name).Scan(&entityID)
 	if err != nil {
-		return 0, fmt.Errorf("[postgres] failed to save entity: %v (name: %s)", err, entity.Name)
+		return 0, fmt.Errorf("[postgres] failed to create entity: %v (name: %s)", err, entity.Name)
 	}
 
 	return entityID, nil

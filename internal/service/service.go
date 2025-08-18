@@ -7,6 +7,6 @@ import (
 )
 
 type EntityService interface {
-	SaveEntity(ctx context.Context, entity *model.Entity) (int64, error)
+	CreateEntity(ctx context.Context, entity *model.Entity) (int64, error)
 	GetEntity(ctx context.Context, id int64) (*model.Entity, error)
 }

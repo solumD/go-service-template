@@ -20,12 +20,12 @@ func New(r repository.Repository) EntityService {
 	}
 }
 
-func (s *entityService) SaveEntity(ctx context.Context, entity *model.Entity) (int64, error) {
+func (s *entityService) CreateEntity(ctx context.Context, entity *model.Entity) (int64, error) {
 	// - some validations
 	// - some checks
 	// - etc.
 
-	entityID, err := s.repository.SaveEntity(ctx, entity)
+	entityID, err := s.repository.CreateEntity(ctx, entity)
 	if err != nil {
 		logger.Error("[service] failed to save entity in repository",
 			zap.Error(err),
@@ -52,10 +52,6 @@ func (s *entityService) GetEntity(ctx context.Context, id int64) (*model.Entity,
 
 		return nil, fmt.Errorf("[service] failed to get entity from repository: %v", err)
 	}
-
-	logger.Info("[service] got entity from repository",
-		zap.Any("entity", entity),
-	)
 
 	return entity, nil
 }
