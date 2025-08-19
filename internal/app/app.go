@@ -23,7 +23,7 @@ import (
 const shutdownTimeout = 10 * time.Second
 
 func InitAndRun(ctx context.Context) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	cfg := config.MustLoad()
@@ -34,6 +34,8 @@ func InitAndRun(ctx context.Context) {
 
 	postgresConn := pg.New(cfg.PostgresDSN())
 	defer postgresConn.Close()
+
+	logger.Info("connected to postgres")
 
 	repository := postgres.New(postgresConn)
 
@@ -72,8 +74,6 @@ func InitAndRun(ctx context.Context) {
 
 	err := server.Shutdown(shutdownCtx)
 	if err != nil {
-		logger.Error("failed to shutdown server", zap.Error(err))
+		logger.Error("error while shutting down server", zap.Error(err))
 	}
-
-	logger.Info("server stopped")
 }
