@@ -23,6 +23,9 @@ import (
 const shutdownTimeout = 10 * time.Second
 
 func InitAndRun(ctx context.Context) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
 	cfg := config.MustLoad()
 
 	logger.Init(logger.GetCore(logger.GetAtomicLevel(cfg.LoggerLevel())))
@@ -64,8 +67,8 @@ func InitAndRun(ctx context.Context) {
 
 	logger.Info("shutting down server...")
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-	defer cancel()
+	shutdownCtx, cancelShutdownCtx := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancelShutdownCtx()
 
 	err := server.Shutdown(shutdownCtx)
 	if err != nil {
