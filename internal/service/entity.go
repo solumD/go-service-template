@@ -23,6 +23,7 @@ func New(r repository.Repository) EntityService {
 func (s *entityService) CreateEntity(ctx context.Context, entity *model.Entity) (int64, error) {
 	// - some validations
 	// - some checks
+	// - some usecases
 	// - etc.
 
 	entityID, err := s.repository.CreateEntity(ctx, entity)
@@ -41,6 +42,7 @@ func (s *entityService) CreateEntity(ctx context.Context, entity *model.Entity) 
 func (s *entityService) GetEntity(ctx context.Context, id int64) (*model.Entity, error) {
 	// - some validations
 	// - some checks
+	// - some usecases
 	// - etc.
 
 	entity, err := s.repository.GetEntity(ctx, id)
