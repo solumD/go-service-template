@@ -13,3 +13,4 @@ func New(s service.EntityService) *handler {
 		service: s,
 	}
 }
+
