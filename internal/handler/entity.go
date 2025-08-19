@@ -23,15 +23,12 @@ type CreateEntityResp struct {
 
 func (h *handler) CreateEntity(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		reqID := middleware.GetReqID(r.Context())
 
 		var req CreateEntityReq
 		if err := render.DecodeJSON(r.Body, &req); err != nil {
 			logger.Error("[handler] failed to unmarshal request",
 				zap.Error(err),
-				zap.String("request_id",
-					reqID,
-				))
+			)
 
 			render.Status(r, http.StatusBadRequest)
 			render.JSON(w, r, NewErrorResponse("failed to unmarshal request"))
@@ -42,9 +39,7 @@ func (h *handler) CreateEntity(ctx context.Context) http.HandlerFunc {
 		if err != nil {
 			logger.Error("[handler] failed to create entity",
 				zap.Error(err),
-				zap.String("request_id",
-					reqID,
-				))
+			)
 
 			render.Status(r, http.StatusInternalServerError)
 			render.JSON(w, r, NewErrorResponse("failed to create entity"))
@@ -53,7 +48,6 @@ func (h *handler) CreateEntity(ctx context.Context) http.HandlerFunc {
 
 		logger.Info("[handler] created entity",
 			zap.Int64("id", id),
-			zap.String("request_id", reqID),
 		)
 
 		render.Status(r, http.StatusOK)

@@ -23,7 +23,7 @@ func (r *entityRepository) CreateEntity(ctx context.Context, entity *model.Entit
 	query := `INSERT INTO entity (name) VALUES ($1) RETURNING id`
 
 	var entityID int64
-	err := r.pg.Pool.QueryRow(ctx, query, entity.Name).Scan(&entityID)
+	err := r.pg.Pool().QueryRow(ctx, query, entity.Name).Scan(&entityID)
 	if err != nil {
 		return 0, fmt.Errorf("[postgres] failed to create entity: %v (name: %s)", err, entity.Name)
 	}
@@ -35,7 +35,7 @@ func (r *entityRepository) GetEntity(ctx context.Context, id int64) (*model.Enti
 	query := `SELECT name FROM entity WHERE id = $1`
 
 	var entityName string
-	err := r.pg.Pool.QueryRow(ctx, query, id).Scan(&entityName)
+	err := r.pg.Pool().QueryRow(ctx, query, id).Scan(&entityName)
 	if err != nil {
 		return nil, fmt.Errorf("[postgres] failed to get entity: %v (id: %d)", err, id)
 	}

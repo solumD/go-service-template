@@ -33,6 +33,9 @@ func InitAndRun(ctx context.Context) {
 	logger.Debug("debug messages are enabled")
 
 	postgresConn := pg.New(cfg.PostgresDSN())
+	if err := postgresConn.Ping(ctx); err != nil {
+		log.Fatalf("failed to connect to postgres: %v", err)
+	}
 	defer postgresConn.Close()
 
 	logger.Info("connected to postgres")
@@ -44,7 +47,6 @@ func InitAndRun(ctx context.Context) {
 	handler := handler.New(service)
 
 	router := chi.NewRouter()
-	router.Use(middleware.RequestID)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 

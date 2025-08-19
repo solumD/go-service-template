@@ -19,7 +19,7 @@ type Postgres struct {
 	connAttempts int
 	connTimeout  time.Duration
 
-	Pool *pgxpool.Pool
+	pool *pgxpool.Pool
 }
 
 func New(dsn string) *Postgres {
@@ -37,7 +37,7 @@ func New(dsn string) *Postgres {
 	poolConfig.MaxConns = int32(pg.maxPoolSize)
 
 	for ; pg.connAttempts > 0; pg.connAttempts-- {
-		pg.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
+		pg.pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
 		if err == nil {
 			break
 		}
@@ -56,8 +56,16 @@ func New(dsn string) *Postgres {
 	return pg
 }
 
+func (pg *Postgres) Ping(ctx context.Context) error {
+	return pg.pool.Ping(context.Background())
+}
+
+func (pg *Postgres) Pool() *pgxpool.Pool {
+	return pg.pool
+}
+
 func (pg *Postgres) Close() {
-	if pg.Pool != nil {
-		pg.Pool.Close()
+	if pg.pool != nil {
+		pg.pool.Close()
 	}
 }
