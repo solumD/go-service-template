@@ -1,13 +1,18 @@
 module github.com/solumD/go-service-template
 
-go 1.24.0
-
-require github.com/jackc/pgx/v5 v5.7.5
+go 1.25.7
 
 require (
+	github.com/go-chi/chi/v5 v5.2.2
+	github.com/jackc/pgx/v5 v5.7.5
+)
+
+require (
+	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
-	github.com/go-chi/chi/v5 v5.2.2 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (
