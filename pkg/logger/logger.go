@@ -1,43 +1,78 @@
 package logger
 
 import (
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"log/slog"
+	"os"
 )
 
-var globalLogger *zap.Logger
+const (
+	levelDebug string = "debug"
+	levelInfo  string = "info"
+	levelWarn  string = "warn"
+	levelError string = "error"
+)
 
-// Init initializes global zap logger
-func Init(core zapcore.Core, options ...zap.Option) {
-	globalLogger = zap.New(core, options...)
+func NewLogger(loggerLevel string) *slog.Logger {
+	var log *slog.Logger
+
+	switch loggerLevel {
+	case levelDebug:
+		log = slog.New(
+			slog.NewTextHandler(
+				os.Stdout,
+				&slog.HandlerOptions{Level: slog.LevelDebug},
+			),
+		)
+	case levelInfo:
+		log = slog.New(
+			slog.NewJSONHandler(
+				os.Stdout,
+				&slog.HandlerOptions{Level: slog.LevelInfo},
+			),
+		)
+	case levelWarn:
+		log = slog.New(
+			slog.NewJSONHandler(
+				os.Stdout,
+				&slog.HandlerOptions{Level: slog.LevelWarn},
+			),
+		)
+	case levelError:
+		log = slog.New(
+			slog.NewJSONHandler(
+				os.Stdout,
+				&slog.HandlerOptions{Level: slog.LevelError},
+			),
+		)
+	}
+
+	return log
 }
 
-// Debug method wrapper
-func Debug(msg string, fields ...zap.Field) {
-	globalLogger.Debug(msg, fields...)
+func Error(err error) slog.Attr {
+	return slog.Attr{
+		Key:   "error",
+		Value: slog.StringValue(err.Error()),
+	}
 }
 
-// Info method wrapper
-func Info(msg string, fields ...zap.Field) {
-	globalLogger.Info(msg, fields...)
+func String(key string, value string) slog.Attr {
+	return slog.Attr{
+		Key:   key,
+		Value: slog.StringValue(value),
+	}
 }
 
-// Warn method wrapper
-func Warn(msg string, fields ...zap.Field) {
-	globalLogger.Warn(msg, fields...)
+func Int(key string, value int) slog.Attr {
+	return slog.Attr{
+		Key:   key,
+		Value: slog.IntValue(value),
+	}
 }
 
-// Error method wrapper
-func Error(msg string, fields ...zap.Field) {
-	globalLogger.Error(msg, fields...)
-}
-
-// Fatal method wrapper
-func Fatal(msg string, fields ...zap.Field) {
-	globalLogger.Fatal(msg, fields...)
-}
-
-// WithOptions method wrapper
-func WithOptions(opts ...zap.Option) *zap.Logger {
-	return globalLogger.WithOptions(opts...)
+func Any(key string, value any) slog.Attr {
+	return slog.Attr{
+		Key:   key,
+		Value: slog.AnyValue(value),
+	}
 }
