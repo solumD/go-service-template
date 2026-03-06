@@ -2,56 +2,47 @@ package usecase
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 
 	"github.com/solumD/go-service-template/internal/model"
 	"github.com/solumD/go-service-template/pkg/logger"
-	"go.uber.org/zap"
 )
 
 type entityUsecase struct {
 	repository EntityRepository
+	log        *slog.Logger
 }
 
-func New(r EntityRepository) *entityUsecase {
+func NewEntityUsecase(r EntityRepository, l *slog.Logger) *entityUsecase {
 	return &entityUsecase{
 		repository: r,
+		log:        l,
 	}
 }
 
-func (uc *entityUsecase) CreateEntity(ctx context.Context, entity *model.Entity) (int64, error) {
-	// - some validations
-	// - some checks
-	// - some usecases
-	// - etc.
+func (uc *entityUsecase) CreateEntity(ctx context.Context, entity *model.Entity) (int, error) {
+	const fn = "entityUsecase.CreateEntity"
+	log := uc.log.With(logger.String("fn", fn))
 
 	entityID, err := uc.repository.CreateEntity(ctx, entity)
 	if err != nil {
-		logger.Error("[service] failed to save entity in repository",
-			zap.Error(err),
-			zap.Any("entity", entity),
-		)
+		log.Error("failed to save entity in repository", logger.Error(err))
 
-		return 0, fmt.Errorf("[service] failed to save entity in repository: %v", err)
+		return 0, err
 	}
 
 	return entityID, nil
 }
 
-func (uc *entityUsecase) GetEntity(ctx context.Context, id int64) (*model.Entity, error) {
-	// - some validations
-	// - some checks
-	// - some usecases
-	// - etc.
+func (uc *entityUsecase) GetEntityByID(ctx context.Context, id int) (*model.Entity, error) {
+	const fn = "entityUsecase.GetEntityByID"
+	log := uc.log.With(logger.String("fn", fn))
 
-	entity, err := uc.repository.GetEntity(ctx, id)
+	entity, err := uc.repository.GetEntityByID(ctx, id)
 	if err != nil {
-		logger.Error("[service] failed to get entity from repository",
-			zap.Error(err),
-			zap.Int64("id", id),
-		)
+		log.Error("failed to get entity by id from repository", logger.Error(err))
 
-		return nil, fmt.Errorf("[service] failed to get entity from repository: %v", err)
+		return nil, err
 	}
 
 	return entity, nil

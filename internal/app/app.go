@@ -2,22 +2,20 @@ package app
 
 import (
 	"context"
-	"log"
+	lg "log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 	"github.com/solumD/go-service-template/config"
-	"github.com/solumD/go-service-template/internal/handler"
 	"github.com/solumD/go-service-template/internal/repository/postgres"
-	"github.com/solumD/go-service-template/internal/server"
+	"github.com/solumD/go-service-template/internal/transport"
+	"github.com/solumD/go-service-template/internal/transport/handler"
 	"github.com/solumD/go-service-template/internal/usecase"
+	httpserver "github.com/solumD/go-service-template/pkg/http_server"
 	"github.com/solumD/go-service-template/pkg/logger"
 	pg "github.com/solumD/go-service-template/pkg/postgres"
-	"go.uber.org/zap"
 )
 
 const shutdownTimeout = 10 * time.Second
@@ -28,54 +26,37 @@ func InitAndRun(ctx context.Context) {
 
 	cfg := config.MustLoad()
 
-	logger.Init(logger.GetCore(logger.GetAtomicLevel(cfg.LoggerLevel())))
-	logger.Info("starting server")
-	logger.Debug("debug messages are enabled")
+	log := logger.NewLogger(cfg.LoggerLevel())
+	log.Debug("debug messages are enabled")
 
 	postgresConn := pg.New(cfg.PostgresDSN())
 	if err := postgresConn.Ping(ctx); err != nil {
-		log.Fatalf("failed to connect to postgres: %v", err)
+		lg.Fatalf("failed to connect to postgres: %v", err)
 	}
 	defer postgresConn.Close()
 
-	logger.Info("connected to postgres")
+	log.Info("connected to postgres")
 
-	repository := postgres.New(postgresConn)
+	entityRepository := postgres.NewEntityRepository(postgresConn)
+	entityUsecase := usecase.NewEntityUsecase(entityRepository, log)
+	handler := handler.New(entityUsecase, log)
 
-	usecase := usecase.New(repository)
+	router := transport.NewRouter(ctx, log, handler)
 
-	handler := handler.New(usecase)
-
-	router := chi.NewRouter()
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.URLFormat)
-
-	router.Route("/api/v1", func(r chi.Router) {
-		r.Route("/entity", func(r chi.Router) {
-			r.Post("/", handler.CreateEntity(ctx))
-			r.Get("/{id}", handler.GetEntity(ctx))
-		})
-	})
-
-	server := server.New(cfg.ServerAddr(), router)
-
-	go func() {
-		if err := server.Run(); err != nil {
-			log.Fatalf("failed to run server: %v", err)
-		}
-	}()
+	server := httpserver.New(cfg.ServerAddr(), router)
+	server.Run()
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 	<-interrupt
 
-	logger.Info("shutting down server...")
+	log.Info("shutting down server...")
 
 	shutdownCtx, cancelShutdownCtx := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancelShutdownCtx()
 
 	err := server.Shutdown(shutdownCtx)
 	if err != nil {
-		logger.Error("error while shutting down server", zap.Error(err))
+		log.Info("error while shutting down server", logger.Error(err))
 	}
 }

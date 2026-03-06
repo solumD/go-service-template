@@ -1,4 +1,4 @@
-package usecase
+package handler
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/solumD/go-service-template/internal/model"
 )
 
-type EntityRepository interface {
+type EntityUsecase interface {
 	CreateEntity(ctx context.Context, entity *model.Entity) (int, error)
 	GetEntityByID(ctx context.Context, id int) (*model.Entity, error)
 }

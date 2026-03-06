@@ -1,4 +1,4 @@
-package handler
+package transport
 
 import (
 	"context"
@@ -7,5 +7,5 @@ import (
 
 type Handler interface {
 	CreateEntity(ctx context.Context) http.HandlerFunc
-	GetEntity(ctx context.Context) http.HandlerFunc
+	GetEntityByID(ctx context.Context) http.HandlerFunc
 }

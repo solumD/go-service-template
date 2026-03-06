@@ -10,9 +10,3 @@ func main() {
 	ctx := context.Background()
 	app.InitAndRun(ctx)
 }
-
-// TODO:
-// Интерфейсы
-// Логгер
-// Роутер
-// ДТО в хендлере

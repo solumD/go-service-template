@@ -1,7 +1,8 @@
-package server
+package httpserver
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 )
@@ -10,15 +11,14 @@ const (
 	ReadTimeout    = 10 * time.Second
 	WriteTimeout   = 10 * time.Second
 	MaxHeaderBytes = 1 << 20 // 1 MB
-
 )
 
-type Server struct {
+type server struct {
 	httpServer *http.Server
 }
 
-func New(addr string, router http.Handler) *Server {
-	return &Server{
+func New(addr string, router http.Handler) *server {
+	return &server{
 		httpServer: &http.Server{
 			Addr:           addr,
 			Handler:        router,
@@ -29,10 +29,15 @@ func New(addr string, router http.Handler) *Server {
 	}
 }
 
-func (s *Server) Run() error {
-	return s.httpServer.ListenAndServe()
+func (s *server) Run() {
+	go func() {
+		if err := s.httpServer.ListenAndServe(); err != nil {
+			log.Fatalf("%v\n", err)
+		}
+	}()
+
 }
 
-func (s *Server) Shutdown(ctx context.Context) error {
+func (s *server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }
