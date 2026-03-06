@@ -1,32 +1,31 @@
-package service
+package usecase
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/solumD/go-service-template/internal/model"
-	"github.com/solumD/go-service-template/internal/repository"
 	"github.com/solumD/go-service-template/pkg/logger"
 	"go.uber.org/zap"
 )
 
-type entityService struct {
-	repository repository.Repository
+type entityUsecase struct {
+	repository EntityRepository
 }
 
-func New(r repository.Repository) EntityService {
-	return &entityService{
+func New(r EntityRepository) *entityUsecase {
+	return &entityUsecase{
 		repository: r,
 	}
 }
 
-func (s *entityService) CreateEntity(ctx context.Context, entity *model.Entity) (int64, error) {
+func (uc *entityUsecase) CreateEntity(ctx context.Context, entity *model.Entity) (int64, error) {
 	// - some validations
 	// - some checks
 	// - some usecases
 	// - etc.
 
-	entityID, err := s.repository.CreateEntity(ctx, entity)
+	entityID, err := uc.repository.CreateEntity(ctx, entity)
 	if err != nil {
 		logger.Error("[service] failed to save entity in repository",
 			zap.Error(err),
@@ -39,13 +38,13 @@ func (s *entityService) CreateEntity(ctx context.Context, entity *model.Entity) 
 	return entityID, nil
 }
 
-func (s *entityService) GetEntity(ctx context.Context, id int64) (*model.Entity, error) {
+func (uc *entityUsecase) GetEntity(ctx context.Context, id int64) (*model.Entity, error) {
 	// - some validations
 	// - some checks
 	// - some usecases
 	// - etc.
 
-	entity, err := s.repository.GetEntity(ctx, id)
+	entity, err := uc.repository.GetEntity(ctx, id)
 	if err != nil {
 		logger.Error("[service] failed to get entity from repository",
 			zap.Error(err),

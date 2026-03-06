@@ -35,7 +35,7 @@ func (h *handler) CreateEntity(ctx context.Context) http.HandlerFunc {
 			return
 		}
 
-		id, err := h.service.CreateEntity(ctx, &req.Entity)
+		id, err := h.entityUsecase.CreateEntity(ctx, &req.Entity)
 		if err != nil {
 			logger.Error("[handler] failed to create entity",
 				zap.Error(err),
@@ -78,7 +78,7 @@ func (h *handler) GetEntity(ctx context.Context) http.HandlerFunc {
 			return
 		}
 
-		entity, err := h.service.GetEntity(ctx, int64(id))
+		entity, err := h.entityUsecase.GetEntity(ctx, int64(id))
 		if err != nil {
 			logger.Error("[handler] failed to get entity",
 				zap.Error(err),

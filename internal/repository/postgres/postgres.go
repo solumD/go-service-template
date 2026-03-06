@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/solumD/go-service-template/internal/model"
-	"github.com/solumD/go-service-template/internal/repository"
 	"github.com/solumD/go-service-template/pkg/postgres"
 )
 
@@ -13,7 +12,7 @@ type entityRepository struct {
 	pg *postgres.Postgres
 }
 
-func New(postgres *postgres.Postgres) repository.Repository {
+func New(postgres *postgres.Postgres) *entityRepository {
 	return &entityRepository{
 		pg: postgres,
 	}

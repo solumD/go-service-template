@@ -1,16 +1,11 @@
 package handler
 
-import (
-	"github.com/solumD/go-service-template/internal/service"
-)
-
 type handler struct {
-	service service.EntityService
+	entityUsecase EntityUsecase
 }
 
-func New(s service.EntityService) *handler {
+func New(uc EntityUsecase) *handler {
 	return &handler{
-		service: s,
+		entityUsecase: uc,
 	}
 }
-

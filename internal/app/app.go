@@ -14,7 +14,7 @@ import (
 	"github.com/solumD/go-service-template/internal/handler"
 	"github.com/solumD/go-service-template/internal/repository/postgres"
 	"github.com/solumD/go-service-template/internal/server"
-	"github.com/solumD/go-service-template/internal/service"
+	"github.com/solumD/go-service-template/internal/usecase"
 	"github.com/solumD/go-service-template/pkg/logger"
 	pg "github.com/solumD/go-service-template/pkg/postgres"
 	"go.uber.org/zap"
@@ -42,9 +42,9 @@ func InitAndRun(ctx context.Context) {
 
 	repository := postgres.New(postgresConn)
 
-	service := service.New(repository)
+	usecase := usecase.New(repository)
 
-	handler := handler.New(service)
+	handler := handler.New(usecase)
 
 	router := chi.NewRouter()
 	router.Use(middleware.Recoverer)
