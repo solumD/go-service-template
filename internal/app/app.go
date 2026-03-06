@@ -37,7 +37,7 @@ func InitAndRun(ctx context.Context) {
 
 	log.Info("connected to postgres")
 
-	entityRepository := postgres.NewEntityRepository(postgresConn)
+	entityRepository := postgres.NewEntityRepository(postgresConn, log)
 	entityUsecase := usecase.NewEntityUsecase(entityRepository, log)
 	handler := handler.New(entityUsecase, log)
 
