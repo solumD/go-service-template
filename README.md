@@ -28,4 +28,7 @@ make build-and-run
 │   ├── http_server
 │   ├── logger
 │   └── postgres
+├── .env
+├── docker-compose.yaml
+└── Makefile
 ```
