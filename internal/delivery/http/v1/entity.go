@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/solumD/go-service-template/internal/handler/v1/dto"
+	"github.com/solumD/go-service-template/internal/delivery/http/v1/dto"
 	"github.com/solumD/go-service-template/pkg/logger"
 )
 
@@ -18,7 +18,7 @@ var (
 	ErrFailedToGetEntityByID = errors.New("failed to get entity by id")
 )
 
-func (h *handler) CreateEntity(ctx context.Context) http.HandlerFunc {
+func (h *handler) createEntity(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.CreateEntity"
 		log := h.log.With(logger.String("fn", fn))
@@ -47,7 +47,7 @@ func (h *handler) CreateEntity(ctx context.Context) http.HandlerFunc {
 	}
 }
 
-func (h *handler) GetEntityByID(ctx context.Context) http.HandlerFunc {
+func (h *handler) getEntityByID(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.GetEntityByID"
 		log := h.log.With(logger.String("fn", fn))

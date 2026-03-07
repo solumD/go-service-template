@@ -8,10 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 	"github.com/solumD/go-service-template/config"
-	v1 "github.com/solumD/go-service-template/internal/handler/v1"
+	"github.com/solumD/go-service-template/internal/delivery/http"
+	v1 "github.com/solumD/go-service-template/internal/delivery/http/v1"
 	"github.com/solumD/go-service-template/internal/repository/postgres"
 	"github.com/solumD/go-service-template/internal/usecase"
 	httpserver "github.com/solumD/go-service-template/pkg/http_server"
@@ -47,13 +46,7 @@ func InitAndRun(ctx context.Context) {
 	v1Handler := v1.New(entityUsecase, log)
 
 	// router initialization
-	router := chi.NewRouter()
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.URLFormat)
-	router.Route("/v1/entity", func(r chi.Router) {
-		r.Post("/", v1Handler.CreateEntity(ctx))
-		r.Get("/{id}", v1Handler.GetEntityByID(ctx))
-	})
+	router := http.NewRouter(ctx, v1Handler)
 
 	// start of the server
 	server := httpserver.New(cfg.ServerAddr(), router)

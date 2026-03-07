@@ -1,12 +1,14 @@
 package v1
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log/slog"
 	"net/http"
 
-	"github.com/solumD/go-service-template/internal/handler/v1/dto"
+	"github.com/go-chi/chi"
+	"github.com/solumD/go-service-template/internal/delivery/http/v1/dto"
 )
 
 const (
@@ -28,6 +30,13 @@ func New(uc EntityUsecase, l *slog.Logger) *handler {
 		entityUsecase: uc,
 		log:           l,
 	}
+}
+
+func (h *handler) InitRoutes(ctx context.Context, r chi.Router) {
+	r.Route("/v1/entity", func(r chi.Router) {
+		r.Post("/", h.createEntity(ctx))
+		r.Get("/{id}", h.getEntityByID(ctx))
+	})
 }
 
 func (h *handler) response(w http.ResponseWriter, contentType string, statusCode int, body []byte) {
