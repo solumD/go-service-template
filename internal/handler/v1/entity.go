@@ -1,4 +1,4 @@
-package handler
+package v1
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/solumD/go-service-template/internal/transport/handler/dto"
+	"github.com/solumD/go-service-template/internal/handler/v1/dto"
 	"github.com/solumD/go-service-template/pkg/logger"
 )
 

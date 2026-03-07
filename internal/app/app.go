@@ -25,23 +25,28 @@ func InitAndRun(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	// loading config
 	cfg := config.MustLoad()
 
+	// logger initialization
 	log := logger.NewLogger(cfg.LoggerLevel())
 	log.Debug("debug messages are enabled")
 
+	// database connection
 	postgresConn := pg.New(cfg.PostgresDSN())
 	if err := postgresConn.Ping(ctx); err != nil {
-		lg.Fatalf("failed to connect to postgres: %v", err)
+		lg.Fatalf("failed to connect to database: %v", err)
 	}
 	defer postgresConn.Close()
 
-	log.Info("connected to postgres")
+	log.Info("connected to database")
 
+	// layers initialization
 	entityRepository := postgres.NewEntityRepository(postgresConn, log)
 	entityUsecase := usecase.NewEntityUsecase(entityRepository, log)
 	v1Handler := v1.New(entityUsecase, log)
 
+	// router initialization
 	router := chi.NewRouter()
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
@@ -50,9 +55,11 @@ func InitAndRun(ctx context.Context) {
 		r.Get("/{id}", v1Handler.GetEntityByID(ctx))
 	})
 
+	// start of the server
 	server := httpserver.New(cfg.ServerAddr(), router)
 	server.Run()
 
+	// graceful shutdown
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 	<-interrupt
