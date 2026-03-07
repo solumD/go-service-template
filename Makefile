@@ -6,6 +6,7 @@ LOCAL_MIGRATION_DIR=$(MIGRATION_DIR)
 LOCAL_MIGRATION_DSN=$(PG_DSN)
 
 build-and-run:
+	make install-deps
 	docker compose up -d
 	GOOS=linux GOARCH=amd64 go build -o bin/service cmd/app/main.go
 	make local-migration-up

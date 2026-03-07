@@ -1,4 +1,4 @@
-package handler
+package v1
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/solumD/go-service-template/internal/transport/handler/dto"
+	"github.com/solumD/go-service-template/internal/handler/v1/dto"
 )
 
 const (
