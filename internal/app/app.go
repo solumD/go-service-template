@@ -41,7 +41,7 @@ func InitAndRun(ctx context.Context) {
 	entityUsecase := usecase.NewEntityUsecase(entityRepository, log)
 	handler := handler.New(entityUsecase, log)
 
-	router := transport.NewRouter(ctx, log, handler)
+	router := transport.NewRouter(ctx, handler)
 
 	server := httpserver.New(cfg.ServerAddr(), router)
 	server.Run()
@@ -50,13 +50,14 @@ func InitAndRun(ctx context.Context) {
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 	<-interrupt
 
-	log.Info("shutting down server...")
+	log.Info("shutting down server")
 
 	shutdownCtx, cancelShutdownCtx := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancelShutdownCtx()
 
-	err := server.Shutdown(shutdownCtx)
-	if err != nil {
+	if err := server.Shutdown(shutdownCtx); err != nil {
 		log.Info("error while shutting down server", logger.Error(err))
 	}
+
+	log.Info("server stopped")
 }

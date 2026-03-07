@@ -10,7 +10,7 @@ import (
 const (
 	ReadTimeout    = 10 * time.Second
 	WriteTimeout   = 10 * time.Second
-	MaxHeaderBytes = 1 << 20 // 1 MB
+	MaxHeaderBytes = 1 << 20
 )
 
 type server struct {

@@ -2,16 +2,14 @@ package transport
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func NewRouter(ctx context.Context, log *slog.Logger, handler Handler) *chi.Mux {
+func NewRouter(ctx context.Context, handler Handler) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.URLFormat)
 
