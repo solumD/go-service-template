@@ -32,6 +32,7 @@ make build-and-run
 │   │   └── postgres
 ├── migrations
 ├── pkg
+│   ├── helper
 │   ├── http_server
 │   ├── logger
 │   └── postgres
