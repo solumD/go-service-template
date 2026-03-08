@@ -4,13 +4,35 @@ volumes:
   postgres_volume:
 
 services:
+  app:
+    build: .
+    container_name: entity_app
+    ports:
+      - "${SERVER_PORT}:8080"
+    environment:
+      - PG_DSN=${PG_DSN}
+      - MIGRATION_DIR=${MIGRATION_DIR}
+      - LOGGER_LEVEL=${LOGGER_LEVEL}
+      - SERVER_HOST=${SERVER_HOST}
+      - SERVER_PORT=${SERVER_PORT}
+    depends_on:
+      pg:
+        condition: service_healthy
+    restart: unless-stopped
+
   pg:
     image: postgres:14-alpine3.17
+    container_name: entity_db
     environment:
-      - "POSTGRES_DB=${PG_DATABASE_NAME}"
-      - "POSTGRES_USER=${PG_USER}"
-      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+      - POSTGRES_DB=${PG_DATABASE_NAME}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
     ports:
       - "${PG_PORT}:5432"
     volumes:
       - postgres_volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

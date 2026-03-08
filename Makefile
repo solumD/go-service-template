@@ -3,14 +3,17 @@ include .env
 LOCAL_BIN:=$(CURDIR)/bin
 
 LOCAL_MIGRATION_DIR=$(MIGRATION_DIR)
-LOCAL_MIGRATION_DSN=$(PG_DSN)
+LOCAL_MIGRATION_DSN=$(MIGRATION_DSN)
 
 build-and-run:
 	make install-deps
+	docker compose build --no-cache
 	docker compose up -d
-	GOOS=linux GOARCH=amd64 go build -o bin/service cmd/app/main.go
+	sleep 3
 	make local-migration-up
-	bin/service
+
+stop:
+	docker compose down
 
 install-deps:
 	GOBIN=$(LOCAL_BIN) go install github.com/pressly/goose/v3/cmd/goose@v3.14.0

@@ -34,6 +34,7 @@ make build-and-run
 │   ├── logger
 │   └── postgres
 ├── .env
+├── Dockerfile
 ├── docker-compose.yaml
 └── Makefile
 ```

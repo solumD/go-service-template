@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	lg "log"
 	"os"
 	"os/signal"
@@ -27,12 +28,14 @@ func InitAndRun(ctx context.Context) {
 	// loading config
 	cfg := config.MustLoad()
 
+	fmt.Println(cfg)
+
 	// logger initialization
-	log := logger.NewLogger(cfg.LoggerLevel())
+	log := logger.NewLogger(cfg.LoggerLevel)
 	log.Debug("debug messages are enabled")
 
 	// database connection
-	postgresConn := pg.New(cfg.PostgresDSN())
+	postgresConn := pg.New(cfg.PostgresDSN)
 	if err := postgresConn.Ping(ctx); err != nil {
 		lg.Fatalf("failed to connect to database: %v", err)
 	}
@@ -51,6 +54,8 @@ func InitAndRun(ctx context.Context) {
 	// start of the server
 	server := httpserver.New(cfg.ServerAddr(), router)
 	server.Run()
+
+	log.Info("server started")
 
 	// graceful shutdown
 	interrupt := make(chan os.Signal, 1)
