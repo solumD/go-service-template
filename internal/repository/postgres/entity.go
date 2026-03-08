@@ -27,6 +27,7 @@ func (r *entityRepository) CreateEntity(ctx context.Context, entity *model.Entit
 	log := r.log.With(logger.String("fn", fn))
 
 	query := `INSERT INTO entity (name) VALUES ($1) RETURNING id`
+
 	log.Debug("executing query", logger.String("query", query), logger.String("name", entity.Name))
 
 	var entityID int
@@ -45,6 +46,7 @@ func (r *entityRepository) GetEntityByID(ctx context.Context, id int) (*model.En
 	log := r.log.With(logger.String("fn", fn))
 
 	query := `SELECT name FROM entity WHERE id = $1`
+
 	log.Debug("executing query", logger.String("query", query), logger.Int("id", id))
 
 	var entityName string
