@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/solumD/go-service-template/internal/model"
+	"github.com/solumD/go-service-template/pkg/helper"
 	"github.com/solumD/go-service-template/pkg/logger"
 )
 
@@ -21,7 +22,7 @@ func NewEntityUsecase(r EntityRepository, l *slog.Logger) *entityUsecase {
 }
 
 func (uc *entityUsecase) CreateEntity(ctx context.Context, entity *model.Entity) (int, error) {
-	const fn = "entityUsecase.CreateEntity"
+	fn := helper.GetCurrentFunctionName()
 	log := uc.log.With(logger.String("fn", fn))
 
 	entityID, err := uc.repository.CreateEntity(ctx, entity)
@@ -35,7 +36,7 @@ func (uc *entityUsecase) CreateEntity(ctx context.Context, entity *model.Entity)
 }
 
 func (uc *entityUsecase) GetEntityByID(ctx context.Context, id int) (*model.Entity, error) {
-	const fn = "entityUsecase.GetEntityByID"
+	fn := helper.GetCurrentFunctionName()
 	log := uc.log.With(logger.String("fn", fn))
 
 	entity, err := uc.repository.GetEntityByID(ctx, id)

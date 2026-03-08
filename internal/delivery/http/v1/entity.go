@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/solumD/go-service-template/internal/delivery/http/v1/dto"
+	"github.com/solumD/go-service-template/pkg/helper"
 	"github.com/solumD/go-service-template/pkg/logger"
 )
 
@@ -20,7 +21,7 @@ var (
 
 func (h *handler) createEntity(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const fn = "handler.CreateEntity"
+		fn := helper.GetCurrentFunctionName()
 		log := h.log.With(logger.String("fn", fn))
 
 		log.Info("new request")
@@ -49,7 +50,7 @@ func (h *handler) createEntity(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) getEntityByID(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const fn = "handler.GetEntityByID"
+		fn := helper.GetCurrentFunctionName()
 		log := h.log.With(logger.String("fn", fn))
 
 		log.Info("new request")

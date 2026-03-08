@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/solumD/go-service-template/internal/model"
+	"github.com/solumD/go-service-template/pkg/helper"
 	"github.com/solumD/go-service-template/pkg/logger"
 	"github.com/solumD/go-service-template/pkg/postgres"
 )
@@ -22,7 +23,7 @@ func NewEntityRepository(pg *postgres.Postgres, l *slog.Logger) *entityRepositor
 }
 
 func (r *entityRepository) CreateEntity(ctx context.Context, entity *model.Entity) (int, error) {
-	const fn = "entityRepository.CreateEntity"
+	fn := helper.GetCurrentFunctionName()
 	log := r.log.With(logger.String("fn", fn))
 
 	query := `INSERT INTO entity (name) VALUES ($1) RETURNING id`
@@ -40,7 +41,7 @@ func (r *entityRepository) CreateEntity(ctx context.Context, entity *model.Entit
 }
 
 func (r *entityRepository) GetEntityByID(ctx context.Context, id int) (*model.Entity, error) {
-	const fn = "entityRepository.GetEntityByID"
+	fn := helper.GetCurrentFunctionName()
 	log := r.log.With(logger.String("fn", fn))
 
 	query := `SELECT name FROM entity WHERE id = $1`
