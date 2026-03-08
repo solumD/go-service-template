@@ -2,9 +2,6 @@ include .env
 
 LOCAL_BIN:=$(CURDIR)/bin
 
-LOCAL_MIGRATION_DIR=$(MIGRATION_DIR)
-LOCAL_MIGRATION_DSN=$(MIGRATION_DSN)
-
 build-and-run:
 	make install-deps
 	docker compose build --no-cache
